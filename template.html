@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VK Постер</title>
+    <!-- Подключение Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0d0d1a; /* Темный фон для киберпанк-стиля */
+            color: #e0e0e0; /* Светлый текст */
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Изменено на flex-start, чтобы контент был сверху */
+            min-height: 100vh;
+            padding: 20px; /* Добавлен отступ для адаптивности */
+            box-sizing: border-box;
+        }
+        .container {
+            background-color: #1a1a2e; /* Более светлый темный фон для контейнера */
+            border-radius: 15px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2); /* Неоновое свечение */
+            width: 100%;
+            max-width: 900px;
+            padding: 30px;
+            box-sizing: border-box;
+            border: 1px solid rgba(0, 255, 255, 0.3); /* Тонкая неоновая граница */
+        }
+        input[type="text"],
+        textarea,
+        input[type="file"] {
+            background-color: #2b2b4d; /* Темные поля ввода */
+            border: 1px solid #4a4a6e;
+            border-radius: 8px;
+            color: #e0e0e0;
+            padding: 12px;
+            margin-top: 8px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+        input[type="text"]:focus,
+        textarea:focus {
+            border-color: #00ffff; /* Неоновая граница при фокусе */
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+            outline: none;
+        }
+        button {
+            background-image: linear-gradient(to right, #6a11cb 0%, #2575fc 100%); /* Градиентная кнопка */
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: none;
+            box-shadow: 0 4px 15px rgba(37, 117, 252, 0.4);
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 117, 252, 0.6);
+        }
+        button.secondary {
+            background-image: linear-gradient(to right, #00b894 0%, #00cec9 100%);
+            box-shadow: 0 4px 15px rgba(0, 190, 185, 0.4);
+        }
+        button.secondary:hover {
+            box-shadow: 0 6px 20px rgba(0, 190, 185, 0.6);
+        }
+        .tab-button {
+            padding: 12px 20px;
+            border-radius: 8px 8px 0 0;
+            background-color: #2b2b4d;
+            color: #a0a0a0;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: border-color 0.3s, color 0.3s;
+        }
+        .tab-button.active {
+            background-color: #1a1a2e;
+            color: #00ffff;
+            border-bottom-color: #00ffff;
+        }
+        .tab-content {
+            background-color: #1a1a2e;
+            padding: 20px;
+            border-radius: 0 0 15px 15px;
+            border-top: none;
+        }
+        .log-area {
+            background-color: #141426;
+            border: 1px solid #00ffff;
+            border-radius: 8px;
+            padding: 15px;
+            min-height: 150px;
+            max-height: 400px;
+            overflow-y: auto;
+            white-space: pre-wrap; /* Сохраняет пробелы и переносы строк */
+            word-wrap: break-word; /* Переносит длинные слова */
+            font-family: 'Courier New', monospace; /* Моноширинный шрифт для логов */
+            font-size: 0.9em;
+            color: #00ff00; /* Зеленый текст для логов */
+        }
+        .log-success { color: #00ff00; }
+        .log-error { color: #ff0000; }
+        .log-info { color: #00ffff; }
+
+        /* Адаптивность */
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            button {
+                width: 100%;
+                margin-top: 10px;
+            }
+            .tab-buttons {
+                flex-direction: column;
+            }
+            .tab-button {
+                border-radius: 8px;
+                margin-bottom: 5px;
+            }
+            .tab-button.active {
+                border-bottom-color: transparent; /* Убрать нижнюю границу для мобильных */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-3xl font-bold text-center mb-6 text-00ffff">VK Постер v0.1</h1>
+
+        <!-- Секция ввода токена -->
+        <div class="mb-8 p-6 bg-2b2b4d rounded-lg border border-4a4a6e">
+            <h2 class="text-xl font-semibold mb-4 text-center">Аутентификация</h2>
+            <div class="flex flex-col md:flex-row gap-4 items-end">
+                <div class="flex-grow w-full">
+                    <label for="accessToken" class="block text-sm font-medium mb-1">Ваш VK Access Token:</label>
+                    <input type="text" id="accessToken" placeholder="Введите ваш VK Access Token" class="w-full">
+                </div>
+                <button onclick="window.open('https://vkhost.github.io/', '_blank')" class="secondary">Получить токен</button>
+                <button onclick="applyToken()">Применить токен</button>
+            </div>
+            <p id="tokenStatus" class="mt-4 text-center text-sm log-info"></p>
+        </div>
+
+        <!-- Основная секция с вкладками -->
+        <div class="mb-8">
+            <div class="flex flex-col md:flex-row gap-2 tab-buttons">
+                <button class="tab-button active flex-1" onclick="showTab('createPost')">Создать пост</button>
+                <button class="tab-button flex-1" onclick="showTab('suggestNews')">Предложить новость</button>
+            </div>
+
+            <div id="createPost" class="tab-content">
+                <h3 class="text-xl font-semibold mb-4 text-center text-00ffff">Публикация на открытую стену</h3>
+                <div class="mb-4">
+                    <label for="postText" class="block text-sm font-medium mb-1">Текст поста:</label>
+                    <textarea id="postText" rows="5" placeholder="Введите текст вашего поста..." class="w-full"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="mediaFiles" class="block text-sm font-medium mb-1">Медиафайлы:</label>
+                    <input type="file" id="mediaFiles" multiple class="w-full p-2 bg-3a3a5a rounded-lg border border-5a5a7a cursor-pointer">
+                    <p class="text-xs text-gray-400 mt-1">Выберите изображения (поддержка видео ограничена).</p>
+                </div>
+                <div class="mb-6">
+                    <label for="groupList" class="block text-sm font-medium mb-1">Список групп (ссылка или ID, по одной на строку):</label>
+                    <textarea id="groupList" rows="5" placeholder="https://vk.com/public123456789 или -123456789&#10;https://vk.com/anothergroup" class="w-full"></textarea>
+                </div>
+                <button onclick="publishPost('createPost')" class="w-full">Опубликовать</button>
+            </div>
+
+            <div id="suggestNews" class="tab-content hidden">
+                <h3 class="text-xl font-semibold mb-4 text-center text-00ffff">Предложить новость (на модерацию)</h3>
+                <div class="mb-4">
+                    <label for="suggestText" class="block text-sm font-medium mb-1">Текст предлагаемой новости:</label>
+                    <textarea id="suggestText" rows="5" placeholder="Введите текст вашей предлагаемой новости..." class="w-full"></textarea>
+                </div>
+                <div class="mb-4">
+                    <label for="suggestMediaFiles" class="block text-sm font-medium mb-1">Медиафайлы:</label>
+                    <input type="file" id="suggestMediaFiles" multiple class="w-full p-2 bg-3a3a5a rounded-lg border border-5a5a7a cursor-pointer">
+                    <p class="text-xs text-gray-400 mt-1">Выберите изображения (поддержка видео ограничена).</p>
+                </div>
+                <div class="mb-6">
+                    <label for="suggestGroupList" class="block text-sm font-medium mb-1">Список групп (ссылка или ID, по одной на строку):</label>
+                    <textarea id="suggestGroupList" rows="5" placeholder="https://vk.com/public123456789 или -123456789&#10;https://vk.com/anothergroup" class="w-full"></textarea>
+                </div>
+                <button onclick="publishPost('suggestNews')" class="w-full">Предложить</button>
+            </div>
+        </div>
+
+        <!-- Секция логов -->
+        <div class="p-6 bg-2b2b4d rounded-lg border border-4a4a6e">
+            <h2 class="text-xl font-semibold mb-4 text-center">Лог работы</h2>
+            <div id="logArea" class="log-area">
+                <p class="log-info">Добро пожаловать! Введите токен и выберите режим постинга.</p>
+            </div>
+            <div class="mt-4 text-sm flex flex-col md:flex-row justify-between items-center gap-2">
+                <p>Успешных попыток: <span id="successCount" class="log-success">0</span></p>
+                <p>Неуспешных попыток: <span id="errorCount" class="log-error">0</span></p>
+                <button onclick="clearLog()" class="secondary text-sm">Очистить лог</button>
+            </div>
+            <div id="publishedLinks" class="mt-4">
+                <h4 class="text-md font-semibold mb-2">Опубликованные ссылки:</h4>
+                <ul id="publishedLinksList" class="list-disc pl-5 log-info text-sm">
+                    <!-- Сюда будут добавляться ссылки -->
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentAccessToken = '';
+        let successCounter = 0;
+        let errorCounter = 0;
+        const BACKEND_URL = 'http://127.0.0.1:5000/api/post'; // URL вашего Flask бэкенда
+
+        // Функция для добавления записей в лог
+        function appendLog(message, type = 'info') {
+            const logArea = document.getElementById('logArea');
+            const p = document.createElement('p');
+            p.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            p.classList.add(`log-${type}`);
+            logArea.appendChild(p);
+            logArea.scrollTop = logArea.scrollHeight; // Прокрутка вниз
+        }
+
+        // Функция для очистки лога
+        function clearLog() {
+            document.getElementById('logArea').innerHTML = '';
+            document.getElementById('publishedLinksList').innerHTML = '';
+            successCounter = 0;
+            errorCounter = 0;
+            document.getElementById('successCount').textContent = '0';
+            document.getElementById('errorCount').textContent = '0';
+            appendLog("Лог очищен.", "info");
+        }
+
+        // Функция для переключения вкладок
+        function showTab(tabId) {
+            const tabs = ['createPost', 'suggestNews'];
+            tabs.forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+                document.querySelector(`button[onclick="showTab('${id}')"]`).classList.remove('active');
+            });
+            document.getElementById(tabId).classList.remove('hidden');
+            document.querySelector(`button[onclick="showTab('${tabId}')"]`).classList.add('active');
+        }
+
+        // Инициализация первой вкладки при загрузке
+        window.onload = () => {
+            showTab('createPost');
+            appendLog("Приложение загружено. Введите ваш VK Access Token.", "info");
+        };
+
+        // Функция для применения токена
+        function applyToken() {
+            const tokenInput = document.getElementById('accessToken');
+            const tokenStatus = document.getElementById('tokenStatus');
+            const token = tokenInput.value.trim();
+
+            if (token) {
+                currentAccessToken = token;
+                tokenStatus.textContent = "Токен успешно применен. Теперь вы можете публиковать посты.";
+                tokenStatus.classList.remove('log-error');
+                tokenStatus.classList.add('log-success');
+                appendLog("Access Token успешно применен.", "success");
+            } else {
+                tokenStatus.textContent = "Пожалуйста, введите Access Token.";
+                tokenStatus.classList.remove('log-success');
+                tokenStatus.classList.add('log-error');
+                appendLog("Ошибка: Access Token не введен.", "error");
+            }
+        }
+
+        // Функция для публикации поста (теперь с вызовом бэкенда)
+        async function publishPost(mode) {
+            if (!currentAccessToken) {
+                appendLog("Ошибка: Access Token не применен. Пожалуйста, введите токен и нажмите 'Применить токен'.", "error");
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('mode', mode);
+
+            let textContent = '';
+            let mediaFiles = [];
+            let groupList = '';
+
+            if (mode === 'createPost') {
+                textContent = document.getElementById('postText').value;
+                mediaFiles = document.getElementById('mediaFiles').files;
+                groupList = document.getElementById('groupList').value;
+            } else if (mode === 'suggestNews') {
+                textContent = document.getElementById('suggestText').value;
+                mediaFiles = document.getElementById('suggestMediaFiles').files;
+                groupList = document.getElementById('suggestGroupList').value;
+            }
+
+            formData.append('textContent', textContent);
+            formData.append('groupList', groupList);
+
+            for (let i = 0; i < mediaFiles.length; i++) {
+                formData.append('mediaFiles', mediaFiles[i]);
+            }
+
+            appendLog(`Начинаем публикацию в режиме: ${mode === 'createPost' ? 'Создать пост' : 'Предложить новость'}...`, 'info');
+            appendLog('Отправка данных на бэкенд...', 'info');
+
+            try {
+                const response = await fetch(BACKEND_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentAccessToken}`
+                        // Content-Type не устанавливаем, браузер сделает это автоматически для FormData
+                    },
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                // Обновляем лог на основе ответа от бэкенда
+                data.log.forEach(entry => appendLog(entry.message, entry.type));
+
+                // Обновляем счетчики
+                successCounter = data.successCount;
+                errorCounter = data.errorCount;
+                document.getElementById('successCount').textContent = successCounter;
+                document.getElementById('errorCount').textContent = errorCounter;
+
+                // Обновляем список опубликованных ссылок
+                document.getElementById('publishedLinksList').innerHTML = '';
+                data.publishedLinks.forEach(link => {
+                    const li = document.createElement('li');
+                    const a = document.createElement('a');
+                    a.href = link;
+                    a.target = '_blank';
+                    a.textContent = link;
+                    a.classList.add('text-blue-400', 'hover:underline');
+                    li.appendChild(a);
+                    document.getElementById('publishedLinksList').appendChild(li);
+                });
+
+                appendLog(`Публикация завершена. Успешных: ${successCounter}, Неуспешных: ${errorCounter}.`, 'info');
+
+            } catch (error) {
+                appendLog(`Критическая ошибка при отправке запроса на бэкенд: ${error}`, 'error');
+                errorCounter++;
+                document.getElementById('errorCount').textContent = errorCounter;
+            }
+        }
+    </script>
+</body>
+</html>
